@@ -1,0 +1,32 @@
+version: "3.3"
+
+services:
+  site_loja:
+    build: .
+    image: api_loja:1.0
+    networks:
+      - api-network
+    container_name: api_loja_container
+    depends_on:
+      - database
+    ports:
+      - 8000:8000
+
+  database:
+    image: postgres:13.8
+    networks:
+      - api-network
+    container_name: database_sl
+    hostname: database
+    environment:
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=753159"
+      - "POSTGRES_DB=postgres"
+    ports:
+      - 2345:5432
+    volumes:
+      - ./db-init/:/docker-entrypoint-initdb.d/
+
+networks:
+  api-network:
+    driver: bridge
