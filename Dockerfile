@@ -4,14 +4,13 @@ ENV GOOS=linux
 ENV GOARCH=amd64
 ENV CGO_ENABLED=0
 ENV GO111MODULE=on
+ENV GOPROXY=https://proxy.golang.org
 
-RUN apk add --no-cache --virtual .build-deps build-base
-
-WORKDIR ${GOPATH}/src/app
+WORKDIR /go/src/app
 
 COPY . .
 
-RUN go env -w GOPROXY=direct
+RUN apk add --no-cache --virtual .build-deps git build-base
 
 RUN go build -ldflags '-extldflags "-static"' -o bin/app main.go
 

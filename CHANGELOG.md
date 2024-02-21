@@ -10,6 +10,8 @@ e este projeto segue o [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 
 - [Melhorias nas consultas e nos tratamentos de erros] by Patrick Luan
 
+- [Correção das imagens do docker-compose] by Patrick Luan
+
 ## (20/02/24)
 
 - [Implementação das funcionalidades do projeto] by Patrick Luan

@@ -11,6 +11,9 @@ services:
       - database
     ports:
       - 8000:8000
+    environment:
+      - "DB_HOST=database"
+      - "DB_PORT=5432"
 
   database:
     image: postgres:16.2
@@ -21,7 +24,7 @@ services:
     environment:
       - "POSTGRES_USER=postgres"
       - "POSTGRES_PASSWORD=753159"
-      - "POSTGRES_DB=postgres"
+      - "POSTGRES_DB=lojaDB"
     ports:
       - 2345:5432
     volumes:
