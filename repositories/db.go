@@ -1,8 +1,11 @@
 package repositories
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
+	"log"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -23,13 +26,17 @@ const (
 func Connection() {
 	connection := fmt.Sprintf("host=%s port=%d user=%s password=%d dbname=%s sslmode=disable", Host, Port, User, Password, DBname)
 
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	db, err = sql.Open("postgres", connection)
 	if err != nil {
-		fmt.Println("Erro ao conectar ao banco de dados:", err.Error())
+		log.Printf("Erro ao conectar ao banco de dados: %v", err)
 	}
 
-	err = db.Ping()
+	err = db.PingContext(ctx)
 	if err != nil {
-		fmt.Println("Erro ao conectar ao banco de dados:", err.Error())
+		db.Close()
+		log.Printf("Erro ao fazer ping no banco de dados: %v", err)
 	}
 }

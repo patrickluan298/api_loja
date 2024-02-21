@@ -11,6 +11,8 @@ WORKDIR ${GOPATH}/src/app
 
 COPY . .
 
+RUN go env -w GOPROXY=direct
+
 RUN go build -ldflags '-extldflags "-static"' -o bin/app main.go
 
 CMD ["./bin/app"]

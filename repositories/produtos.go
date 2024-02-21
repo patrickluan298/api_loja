@@ -1,107 +1,88 @@
 package repositories
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/api_loja/models"
 )
 
-func AdicionaProduto(nome string, descricao string, preco float64, quantidade int) {
+func AdicionaProduto(nome string, descricao string, preco float64, quantidade int) error {
 	Connection()
 	defer db.Close()
 
-	query, err := db.Prepare("insert into produtos (nome, descricao, preco, quantidade) values ($1, $2, $3, $4)")
+	_, err = db.Exec("INSERT INTO produtos (nome, descricao, preco, quantidade) VALUES ($1, $2, $3, $4)", nome, descricao, preco, quantidade)
 	if err != nil {
-		fmt.Println(err.Error())
+		return fmt.Errorf("erro ao adicionar produto: %v", err)
 	}
 
-	query.Exec(nome, descricao, preco, quantidade)
+	return nil
 }
 
-func BuscaTodosProdutos() []models.Produto {
+func BuscaTodosProdutos() ([]models.Produto, error) {
 	Connection()
 	defer db.Close()
 
-	query, err := db.Query("select * from produtos order by id asc")
+	rows, err := db.Query("SELECT * FROM produtos ORDER BY id ASC")
 	if err != nil {
-		fmt.Println(err.Error())
+		return nil, fmt.Errorf("erro ao listar produtos: %v", err)
 	}
 
-	p := models.Produto{}
 	produtos := []models.Produto{}
 
-	for query.Next() {
-		var id, quantidade int
-		var nome, descricao string
-		var preco float64
+	for rows.Next() {
+		var produto models.Produto
 
-		err = query.Scan(&id, &nome, &descricao, &preco, &quantidade)
+		err := rows.Scan(&produto.ID, &produto.Nome, &produto.Descricao, &produto.Preco, &produto.Quantidade)
 		if err != nil {
-			fmt.Println(err.Error())
+			return nil, fmt.Errorf("erro ao escanear produtos: %v", err)
 		}
 
-		p.ID = id
-		p.Nome = nome
-		p.Descricao = descricao
-		p.Preco = preco
-		p.Quantidade = quantidade
-		produtos = append(produtos, p)
+		produtos = append(produtos, produto)
 	}
 
-	return produtos
+	return produtos, nil
 }
 
-func EditaProduto(id string) models.Produto {
+func EditaProduto(id string) (models.Produto, error) {
 	Connection()
 	defer db.Close()
 
-	query, err := db.Query("select * from produtos where id = $1", id)
+	row := db.QueryRow("SELECT * FROM produtos WHERE id = $1", id)
+
+	produto := models.Produto{}
+
+	err := row.Scan(&produto.ID, &produto.Nome, &produto.Descricao, &produto.Preco, &produto.Quantidade)
 	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	atualizar := models.Produto{}
-
-	for query.Next() {
-		var id, quantidade int
-		var nome, descricao string
-		var preco float64
-
-		err = query.Scan(&id, &nome, &descricao, &preco, &quantidade)
-		if err != nil {
-			fmt.Println(err.Error())
+		if err == sql.ErrNoRows {
+			return models.Produto{}, fmt.Errorf("produto com ID %s não encontrado", id)
 		}
-
-		atualizar.ID = id
-		atualizar.Nome = nome
-		atualizar.Descricao = descricao
-		atualizar.Preco = preco
-		atualizar.Quantidade = quantidade
+		return models.Produto{}, err
 	}
 
-	return atualizar
+	return produto, nil
 }
 
-func AtualizaProduto(id int, nome string, descricao string, preco float64, quantidade int) {
+func AtualizaProduto(id int, nome string, descricao string, preco float64, quantidade int) error {
 	Connection()
 	defer db.Close()
 
-	query, err := db.Prepare("update produtos set nome = $1, descricao = $2, preco = $3, quantidade = $4 where id = $5")
+	_, err = db.Exec("UPDATE produtos SET nome = $1, descricao = $2, preco = $3, quantidade = $4 WHERE id = $5", nome, descricao, preco, quantidade, id)
 	if err != nil {
-		fmt.Println(err.Error())
+		return fmt.Errorf("falha ao atualizar produto: %v", err)
 	}
 
-	query.Exec(nome, descricao, preco, quantidade, id)
+	return nil
 }
 
-func DeletaProduto(id string) {
+func DeletaProduto(id string) error {
 	Connection()
 	defer db.Close()
 
-	query, err := db.Prepare("delete from produtos where id = $1")
+	_, err = db.Exec("DELETE FROM produtos WHERE id = $1", id)
 	if err != nil {
-		fmt.Println(err.Error())
+		return fmt.Errorf("falha ao excluir produto produto: %v", err)
 	}
 
-	query.Exec(id)
+	return nil
 }

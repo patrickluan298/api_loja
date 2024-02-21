@@ -1,7 +1,7 @@
 version: "3.3"
 
 services:
-  site_loja:
+  api_loja:
     build: .
     image: api_loja:1.0
     networks:
@@ -13,10 +13,10 @@ services:
       - 8000:8000
 
   database:
-    image: postgres:13.8
+    image: postgres:16.2
     networks:
       - api-network
-    container_name: database_sl
+    container_name: database_loja
     hostname: database
     environment:
       - "POSTGRES_USER=postgres"
