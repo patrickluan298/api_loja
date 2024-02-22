@@ -11,7 +11,6 @@ WORKDIR /go/src/app
 COPY . .
 
 RUN apk add --no-cache --virtual .build-deps git build-base
-
 RUN go build -ldflags '-extldflags "-static"' -o bin/app main.go
 
 CMD ["./bin/app"]
