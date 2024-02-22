@@ -25,11 +25,11 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func New(w http.ResponseWriter, r *http.Request) {
+func Novo(w http.ResponseWriter, r *http.Request) {
 	temp.ExecuteTemplate(w, "New", nil)
 }
 
-func Insert(w http.ResponseWriter, r *http.Request) {
+func Inserir(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método não permitido, apenas POST é suportado.", http.StatusMethodNotAllowed)
 		return
@@ -78,7 +78,7 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func Delete(w http.ResponseWriter, r *http.Request) {
+func Deletar(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	if id == "" {
 		http.Error(w, "ID não fornecido na requisição", http.StatusBadRequest)
@@ -92,7 +92,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
-func Edit(w http.ResponseWriter, r *http.Request) {
+func Editar(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
 	produto, err := repositories.EditaProduto(id)
@@ -103,7 +103,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	temp.ExecuteTemplate(w, "Edit", produto)
 }
 
-func Update(w http.ResponseWriter, r *http.Request) {
+func Atualizar(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
 		return

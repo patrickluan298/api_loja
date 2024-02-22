@@ -8,9 +8,9 @@ import (
 
 func HandleRequest() {
 	http.HandleFunc("/", handlers.Index)
-	http.HandleFunc("/new", handlers.New)
-	http.HandleFunc("/insert", handlers.Insert)
-	http.HandleFunc("/delete", handlers.Delete)
-	http.HandleFunc("/edit", handlers.Edit)
-	http.HandleFunc("/update", handlers.Update)
+	http.HandleFunc("/novo", handlers.Novo)
+	http.HandleFunc("/inserir", handlers.Inserir)
+	http.HandleFunc("/deletar", handlers.Deletar)
+	http.HandleFunc("/editar", handlers.Editar)
+	http.HandleFunc("/atualizar", handlers.Atualizar)
 }

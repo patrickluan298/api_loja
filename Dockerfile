@@ -5,6 +5,7 @@ ENV GOARCH=amd64
 ENV CGO_ENABLED=0
 ENV GO111MODULE=on
 ENV GOPROXY=https://proxy.golang.org
+ENV GOSUMDB=off
 
 WORKDIR /go/src/app
 
